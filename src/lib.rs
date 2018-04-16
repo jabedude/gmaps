@@ -1,3 +1,6 @@
+use std::fs::File;
+use std::io::Write;
+
 pub struct GoogleMaps {
     center: (f32, f32),
     markers: Vec<(f32, f32)>,
@@ -16,9 +19,6 @@ impl GoogleMaps {
     }
 
     pub fn draw(&self, filename: &str) {
-        use std::fs::File;
-        use std::io::Write;
-
         // TODO: validate path
         let mut f = File::create(filename).expect("Unable to create file");
         // TODO: maybe use BufferedWriter
@@ -40,6 +40,7 @@ impl GoogleMaps {
         f.write_all("\t\t\tmapTypeId: google.maps.MapTypeId.ROADMAP\n".as_bytes());
         f.write_all("\t\t};\n".as_bytes());
         f.write_all("\t\tvar map = new google.maps.Map(document.getElementById(\"map_canvas\"), myOptions);\n".as_bytes());
+        self.draw_markers(&mut f);
         f.write_all("\n".as_bytes());
         f.write_all("\t}\n".as_bytes());
         f.write_all("</script>\n".as_bytes());
@@ -49,6 +50,18 @@ impl GoogleMaps {
             "\t<div id=\"map_canvas\" style=\"width: 100%; height: 100%;\"></div>\n".as_bytes());
         f.write_all("</body>\n".as_bytes());
         f.write_all("</html>\n".as_bytes());
+    }
+
+    fn draw_markers(&self, mut f: &File) {
+        for marker in &self.markers {
+            // let loc = "var loc = new google.maps.LatLng(marker.0, marker.1);\n";
+            let image = "var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
+            let icon =
+                format!("var marker = new google.maps.Marker({{\n\tposition: {{lat: {}, lng: {}}},\n\tmap: map,\t\nicon: image\n}});", marker.0, marker.1);
+            f.write_all(image.as_bytes());
+            f.write_all(icon.as_bytes());
+            f.write_all("marker.setMap(map);\n".as_bytes());
+        }
     }
 }
 
