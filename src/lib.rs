@@ -1,10 +1,10 @@
 pub struct GoogleMaps {
-    coordinate: u64,
+    center: (f32, f32),
 }
 
 impl GoogleMaps {
     pub fn new() -> GoogleMaps {
-        GoogleMaps { coordinate: 0 }
+        GoogleMaps { center: (0f32, 0f32) }
     }
 
     pub fn draw(&self, filename: &str) {
@@ -12,6 +12,7 @@ impl GoogleMaps {
         use std::io::Write;
 
         let mut f = File::create(filename).expect("Unable to create file");
+        // TODO: maybe use BufferedWriter
         f.write_all("<html>\n".as_bytes());
         f.write_all("<head>\n".as_bytes());
         f.write_all(
@@ -23,7 +24,7 @@ impl GoogleMaps {
             "<script type=\"text/javascript\" src=\"https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false\"></script>\n".as_bytes());
         f.write_all("<script type=\"text/javascript\">\n".as_bytes());
         f.write_all("\tfunction initialize() {\n".as_bytes());
-        f.write_all("\t\tvar centerlatlng = new google.maps.LatLng(0.000000, 0.000000);\n".as_bytes());
+        f.write_all(format!("\t\tvar centerlatlng = new google.maps.LatLng({}, {});\n", self.center.0, self.center.1).as_bytes());
         f.write_all("\t\tvar myOptions = {\n".as_bytes());
         f.write_all("\t\t\tzoom: 5,\n".as_bytes());
         f.write_all("\t\t\tcenter: centerlatlng,\n".as_bytes());
