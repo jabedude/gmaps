@@ -1,16 +1,25 @@
 pub struct GoogleMaps {
     center: (f32, f32),
+    markers: Vec<(f32, f32)>,
 }
 
 impl GoogleMaps {
     pub fn new() -> GoogleMaps {
-        GoogleMaps { center: (0f32, 0f32) }
+        GoogleMaps {
+            center: (0_f32, 0_f32),
+            markers: Vec::new(),
+        }
+    }
+
+    pub fn new_marker(&mut self, location: (f32, f32)) {
+        unimplemented!();
     }
 
     pub fn draw(&self, filename: &str) {
         use std::fs::File;
         use std::io::Write;
 
+        // TODO: validate path
         let mut f = File::create(filename).expect("Unable to create file");
         // TODO: maybe use BufferedWriter
         f.write_all("<html>\n".as_bytes());
