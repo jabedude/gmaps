@@ -3,16 +3,15 @@ pub struct GoogleMaps {
 }
 
 impl GoogleMaps {
-    pub fn new(filename: &str) -> GoogleMaps {
+    pub fn new() -> GoogleMaps {
         GoogleMaps { coordinate: 0 }
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&self, filename: &str) {
         use std::fs::File;
         use std::io::Write;
 
-
-        let mut f = File::create("/vagrant/mymap.html").expect("Unable to create file");
+        let mut f = File::create(filename).expect("Unable to create file");
         f.write_all("<html>\n".as_bytes());
         f.write_all("<head>\n".as_bytes());
         f.write_all(
@@ -20,7 +19,8 @@ impl GoogleMaps {
         f.write_all(
             "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"/>\n".as_bytes());
         f.write_all("<title>Google Maps - gmplot </title>\n".as_bytes());
-        f.write_all("<script type=\"text/javascript\" src=\"https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false\"></script>\n".as_bytes());
+        f.write_all(
+            "<script type=\"text/javascript\" src=\"https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false\"></script>\n".as_bytes());
         f.write_all("<script type=\"text/javascript\">\n".as_bytes());
         f.write_all("\tfunction initialize() {\n".as_bytes());
         f.write_all("\t\tvar centerlatlng = new google.maps.LatLng(0.000000, 0.000000);\n".as_bytes());
