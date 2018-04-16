@@ -12,7 +12,7 @@ impl GoogleMaps {
     }
 
     pub fn new_marker(&mut self, location: (f32, f32)) {
-        unimplemented!();
+        self.markers.push(location);
     }
 
     pub fn draw(&self, filename: &str) {
@@ -49,5 +49,11 @@ impl GoogleMaps {
             "\t<div id=\"map_canvas\" style=\"width: 100%; height: 100%;\"></div>\n".as_bytes());
         f.write_all("</body>\n".as_bytes());
         f.write_all("</html>\n".as_bytes());
+    }
+}
+
+impl std::fmt::Display for GoogleMaps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "(center: {:?}, markers: {:?})", self.center, self.markers)
     }
 }
