@@ -53,12 +53,12 @@ impl GoogleMaps {
     }
 
     fn draw_markers(&self, mut f: &File) {
+        let image = "\t\tvar image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
+        f.write_all(image.as_bytes());
         for (index, marker) in self.markers.iter().enumerate() {
             // let loc = "var loc = new google.maps.LatLng(marker.0, marker.1);\n";
-            let image = "\t\tvar image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
             let icon =
                 format!("\n\t\tvar marker{} = new google.maps.Marker({{\n\t\t\tposition: {{lat: {}, lng: {}}},\n\t\t\tmap: map,\n\t\t\ticon: image\n\t\t}});", index, marker.0, marker.1);
-            f.write_all(image.as_bytes());
             f.write_all(icon.as_bytes());
             f.write_all(format!("\n\t\tmarker{}.setMap(map);\n", index).as_bytes());
         }
