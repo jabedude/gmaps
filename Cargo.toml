@@ -4,3 +4,7 @@ version = "0.1.0"
 authors = ["Josh Abraham <sinisterpatrician@gmail.com>"]
 
 [dependencies]
+reqwest = "0.8.5"
+serde = "1.0.38"
+serde_derive = "1.0.38"
+serde_json = "1.0"

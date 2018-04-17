@@ -26,3 +26,8 @@ fn test_multiple_markers() {
     gm.draw(&"/vagrant/test_map.html");
     println!("{}", gm);
 }
+
+#[test]
+fn test_json_request() {
+    gmaps::json_req();
+}
