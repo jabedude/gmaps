@@ -1,5 +1,13 @@
+extern crate reqwest;
+
+#[macro_use]
+extern crate serde_derive;
+extern crate serde_json;
+
 use std::fs::File;
 use std::io::Write;
+
+use reqwest::header::Origin;
 
 
 pub struct GoogleMaps {
@@ -7,6 +15,20 @@ pub struct GoogleMaps {
     markers: Vec<(f32, f32)>,
 }
 
+#[derive(Deserialize, Debug)]
+struct Ans {
+    results: serde_json::Value,
+}
+
+pub fn json_req() {
+    // let json: Ip = reqwest::get("http://maps.googleapis.com/maps/api/geocode/json?address=\"San Fransisco\"").unwrap().json().unwrap();
+    let client = reqwest::Client::new();
+    let res: Ans = client.get("http://maps.googleapis.com/maps/api/geocode/json?address=Tampa")
+                        .header(Origin::new("https", "wikipedia.org", Some(443)))
+                        .send().unwrap().json().unwrap();
+
+    println!("{:?}", res.results["address_components"])
+}
 
 impl GoogleMaps {
     pub fn new(lat: f32, long: f32) -> GoogleMaps {
