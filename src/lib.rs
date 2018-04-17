@@ -9,7 +9,6 @@ use std::io::Write;
 
 use reqwest::header::Origin;
 
-
 pub struct GoogleMaps {
     center: (f32, f32),
     markers: Vec<(f32, f32)>,
@@ -22,7 +21,11 @@ pub fn json_req() {
                         .header(Origin::new("https", "wikipedia.org", Some(443)))
                         .send().unwrap().json().unwrap();
 
-    println!("{:?}", res["results"][0]["geometry"]["location"])
+    //println!("{:?}", res);
+    //println!("{:?}", res["results"][0]["geometry"]["location"]["lat"].as_f64().unwrap());
+    let lat = res["results"][0]["geometry"]["location"]["lat"].as_f64().unwrap();
+    let lng = res["results"][0]["geometry"]["location"]["lng"].as_f64().unwrap();
+    println!("Latitude: {}\nLongitude: {}", lat, lng);
 }
 
 impl GoogleMaps {
