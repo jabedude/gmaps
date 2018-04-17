@@ -1,10 +1,12 @@
 use std::fs::File;
 use std::io::Write;
 
+
 pub struct GoogleMaps {
     center: (f32, f32),
     markers: Vec<(f32, f32)>,
 }
+
 
 impl GoogleMaps {
     pub fn new(lat: f32, long: f32) -> GoogleMaps {
@@ -16,6 +18,7 @@ impl GoogleMaps {
 
     pub fn from_geocode(geocode: &str) -> Option<GoogleMaps> {
         unimplemented!();
+        let endpoint = format!("http://maps.googleapis.com/maps/api/geocode/json?address=\"{}\"", geocode);
     }
 
     pub fn new_marker(&mut self, location: (f32, f32)) {
