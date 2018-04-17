@@ -29,5 +29,5 @@ fn test_multiple_markers() {
 
 #[test]
 fn test_json_request() {
-    gmaps::json_req();
+    let gm = GoogleMaps::from_geocode("Tampa");
 }
