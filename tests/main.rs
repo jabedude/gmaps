@@ -20,7 +20,7 @@ fn test_marker() {
 fn test_multiple_markers() {
     let mut gm = GoogleMaps::new(37.766956, -122.438481);
     let location1 = (37.770776, -122.461689);
-    let location2 = (37.770786, -122.461679);
+    let location2 = (37.770706, -122.461609);
     gm.new_marker(location1);
     gm.new_marker(location2);
     gm.draw(&"/vagrant/test_map.html");
