@@ -10,14 +10,14 @@ use std::io::Write;
 use reqwest::header::Origin;
 
 pub struct GoogleMaps {
-    center: (f32, f32),
-    markers: Vec<(f32, f32)>,
+    center: (f64, f64),
+    markers: Vec<(f64, f64)>,
 }
 
-pub fn json_req() {
+pub fn json_req(url: &str) -> Option<(f64, f64)> {
     let client = reqwest::Client::new();
     // TODO: Origin header probably non necessary
-    let res: serde_json::Value = client.get("http://maps.googleapis.com/maps/api/geocode/json?address=Tampa")
+    let res: serde_json::Value = client.get(url)
                         .header(Origin::new("https", "wikipedia.org", Some(443)))
                         .send().unwrap().json().unwrap();
 
@@ -26,10 +26,11 @@ pub fn json_req() {
     let lat = res["results"][0]["geometry"]["location"]["lat"].as_f64().unwrap();
     let lng = res["results"][0]["geometry"]["location"]["lng"].as_f64().unwrap();
     println!("Latitude: {}\nLongitude: {}", lat, lng);
+    Some((lat, lng))
 }
 
 impl GoogleMaps {
-    pub fn new(lat: f32, long: f32) -> GoogleMaps {
+    pub fn new(lat: f64, long: f64) -> GoogleMaps {
         GoogleMaps {
             center: (lat, long),
             markers: Vec::new(),
@@ -37,11 +38,12 @@ impl GoogleMaps {
     }
 
     pub fn from_geocode(geocode: &str) -> Option<GoogleMaps> {
-        unimplemented!();
         let endpoint = format!("http://maps.googleapis.com/maps/api/geocode/json?address=\"{}\"", geocode);
+        let (lat, long) = json_req(&endpoint).unwrap();
+        Some(GoogleMaps::new(lat, long))
     }
 
-    pub fn new_marker(&mut self, location: (f32, f32)) {
+    pub fn new_marker(&mut self, location: (f64, f64)) {
         self.markers.push(location);
     }
 
