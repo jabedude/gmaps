@@ -14,6 +14,10 @@ impl GoogleMaps {
         }
     }
 
+    pub fn from_geocode(geocode: &str) -> Option<GoogleMaps> {
+        unimplemented!();
+    }
+
     pub fn new_marker(&mut self, location: (f32, f32)) {
         self.markers.push(location);
     }
