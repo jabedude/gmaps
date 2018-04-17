@@ -15,19 +15,14 @@ pub struct GoogleMaps {
     markers: Vec<(f32, f32)>,
 }
 
-#[derive(Deserialize, Debug)]
-struct Ans {
-    results: serde_json::Value,
-}
-
 pub fn json_req() {
-    // let json: Ip = reqwest::get("http://maps.googleapis.com/maps/api/geocode/json?address=\"San Fransisco\"").unwrap().json().unwrap();
     let client = reqwest::Client::new();
-    let res: Ans = client.get("http://maps.googleapis.com/maps/api/geocode/json?address=Tampa")
+    // TODO: Origin header probably non necessary
+    let res: serde_json::Value = client.get("http://maps.googleapis.com/maps/api/geocode/json?address=Tampa")
                         .header(Origin::new("https", "wikipedia.org", Some(443)))
                         .send().unwrap().json().unwrap();
 
-    println!("{:?}", res.results["address_components"])
+    println!("{:?}", res["results"][0]["geometry"]["location"])
 }
 
 impl GoogleMaps {
