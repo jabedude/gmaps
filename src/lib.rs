@@ -7,9 +7,9 @@ pub struct GoogleMaps {
 }
 
 impl GoogleMaps {
-    pub fn new() -> GoogleMaps {
+    pub fn new(lat: f32, long: f32) -> GoogleMaps {
         GoogleMaps {
-            center: (0_f32, 0_f32),
+            center: (lat, long),
             markers: Vec::new(),
         }
     }
@@ -53,14 +53,14 @@ impl GoogleMaps {
     }
 
     fn draw_markers(&self, mut f: &File) {
-        for marker in &self.markers {
+        for (index, marker) in self.markers.iter().enumerate() {
             // let loc = "var loc = new google.maps.LatLng(marker.0, marker.1);\n";
-            let image = "var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
+            let image = "\t\tvar image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
             let icon =
-                format!("var marker = new google.maps.Marker({{\n\tposition: {{lat: {}, lng: {}}},\n\tmap: map,\t\nicon: image\n}});", marker.0, marker.1);
+                format!("\n\t\tvar marker{} = new google.maps.Marker({{\n\t\t\tposition: {{lat: {}, lng: {}}},\n\t\t\tmap: map,\n\t\t\ticon: image\n\t\t}});", index, marker.0, marker.1);
             f.write_all(image.as_bytes());
             f.write_all(icon.as_bytes());
-            f.write_all("marker.setMap(map);\n".as_bytes());
+            f.write_all(format!("\n\t\tmarker{}.setMap(map);\n", index).as_bytes());
         }
     }
 }
