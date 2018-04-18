@@ -11,7 +11,11 @@ use reqwest::header::Origin;
 
 pub struct GoogleMaps {
     center: (f64, f64),
-    markers: Vec<(f64, f64)>,
+    markers: Vec<((f64, f64), ImageType)>,
+}
+
+pub enum ImageType {
+    Beachimage = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
 }
 
 pub fn json_req(url: &str) -> Option<(f64, f64)> {
@@ -43,8 +47,8 @@ impl GoogleMaps {
         Some(GoogleMaps::new(lat, long))
     }
 
-    pub fn new_marker(&mut self, location: (f64, f64)) {
-        self.markers.push(location);
+    pub fn new_marker(&mut self, location: (f64, f64), image: &str) {
+        self.markers.push((location, image));
     }
 
     pub fn draw(&self, filename: &str) {
@@ -82,12 +86,12 @@ impl GoogleMaps {
     }
 
     fn draw_markers(&self, mut f: &File) {
-        let image = "\t\tvar image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';";
-        f.write_all(image.as_bytes());
         for (index, marker) in self.markers.iter().enumerate() {
             // let loc = "var loc = new google.maps.LatLng(marker.0, marker.1);\n";
+            let image = format!("\t\tvar image{} = '{}';", index, marker.1);
+            f.write_all(image.as_bytes());
             let icon =
-                format!("\n\t\tvar marker{} = new google.maps.Marker({{\n\t\t\tposition: {{lat: {}, lng: {}}},\n\t\t\tmap: map,\n\t\t\ticon: image\n\t\t}});", index, marker.0, marker.1);
+                format!("\n\t\tvar marker{} = new google.maps.Marker({{\n\t\t\tposition: {{lat: {}, lng: {}}},\n\t\t\tmap: map,\n\t\t\ticon: image\n\t\t}});", index, (marker.0).0, (marker.0).1);
             f.write_all(icon.as_bytes());
             f.write_all(format!("\n\t\tmarker{}.setMap(map);\n", index).as_bytes());
         }
